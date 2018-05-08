@@ -1,6 +1,6 @@
 #! /usr/local/bin/python3
 # -*- coding: UTF-8 -*-
-
+# 自动投标
 
 import urllib
 from urllib import request,parse
@@ -149,8 +149,7 @@ def time_judge(user_id,money,pwd_str,time_bid,bid_lilv):
         if datetime.now().strftime('%H:%M:%S') > time_bid:
             print("明天执行")
             tomorrow_day = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d') + time_bid
-            while datetime.now().strftime('%H:%M:%S') >= time_bid or datetime.now().strftime(
-                    '%Y-%m-%d %H-%M-%S') < tomorrow_day:
+            while datetime.now().strftime('%H:%M:%S') >= time_bid or datetime.now().strftime('%Y-%m-%d %H-%M-%S') < tomorrow_day:
                 pass
             break
         else:
