@@ -14,18 +14,24 @@ from json import JSONDecodeError
 import logging # 异常数据
 import xlwt # 表格创建
 from datetime import datetime,timedelta # 时间判断
-import ThreadGetResult # 返回结果的多线程
-# import threading
+# import ThreadGetResult # 返回结果的多线程
+import threading
+
+www_time_arr = [] # www请求时间数组
+php_time_arr = [] # php请求时间数组
 
 # www 获取数据
 def get_www_data(url,params):
     time_begin = time.time()
     request = requests.post(url,data=params)
     try:
+        global www_time_arr
         result_dict = json.loads(request.text) # 把 str 转换成 dict
         result_json = json.dumps(result_dict, sort_keys=True, indent=2) # 把 dict 转换成 json
         time_consume = time.time() - time_begin
         print("\nwww json结果result：",result_json,"\nwww result数据类型：",type(result_json),"请求所需时间：",time_consume)
+        www_time_arr.append(time_consume)
+        print("www_time_arr的长度：%d" % len(www_time_arr))
         return (result_json,time_consume)
     except JSONDecodeError as e:
         print("异常信息：", e.msg)
@@ -164,8 +170,8 @@ def start_request_ten():
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=UserInfoReviewStatus&UserId=14973&Token=dc455796e54a783a9e64ed9c363d51bd&defidenshuxing=1&platformiOS=iOS&CmdId=UserInfoReviewStatus&AppTime=1523255223&AppId=iOS",
         # 13 获取我的银行卡列表数据
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=LLQueryCard&UserId=10719&Token=4eac92a9b31420484683cca14fb9c5c8&defidenshuxing=1&platformiOS=iOS&AppTime=1523250517&FlagChnl=1&AppId=iOS",
-        # 14 获取用户信息
-        "https://www.rongtuojinrong.com/hsesb/esb?CmdId=BendiLLQueryEBankAcct&UserId=10719&Token=54a1f22a5800ba323bac7905bf307c6a&defidenshuxing=1&platformiOS=iOS&AppTime=1523250558&FlagChnl=1&AppId=iOS",
+        # # 14 获取用户信息
+        # "https://www.rongtuojinrong.com/hsesb/esb?CmdId=BendiLLQueryEBankAcct&UserId=10719&Token=54a1f22a5800ba323bac7905bf307c6a&defidenshuxing=1&platformiOS=iOS&AppTime=1523250558&FlagChnl=1&AppId=iOS",
         # 15 充值页面 获取充值数据
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=BendiLLQueryEBankAcct&UserId=10719&Token=a8866e02cae1a696673a361adc746a6e&defidenshuxing=1&platformiOS=iOS&CmdId=BendiLLQueryEBankAcct&AppTime=1523251579&FlagChnl=1&AppId=iOS",
         # 16 充值 -- 支付创单
@@ -204,8 +210,8 @@ def start_request_ten():
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=GetAllProjectList&UserId=9166&pro_status=0&Token=c7a0d0516357288d37342abf9d037485&defidenshuxing=1&platformiOS=iOS&CmdId=GetAllProjectList&AppTime=1523254929&page=1&AppId=iOS&page_size=6",
         # 33 首页-悬浮米袋
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=LLPurseDisplay&Token=df987f0c7c37eb9dac3c79e59ac6b1a1&UserId=9166&AppId=iOS&platformiOS=iOS&AppTime=1523255010&defidenshuxing=1",
-        # 34 用户开户成功后判断用户是否设置交易密码
-        "https://www.rongtuojinrong.com/hsesb/esb?CmdId=QueryAcctPasswordIsSet&FlagChnl=1&UserId=9166&defidenshuxing=1&Token=f8d2fefcbe3127c6ad5b7714398f389c&AppTime=1523255004&AppId=iOS",
+        # # 34 用户开户成功后判断用户是否设置交易密码
+        # "https://www.rongtuojinrong.com/hsesb/esb?CmdId=QueryAcctPasswordIsSet&FlagChnl=1&UserId=9166&defidenshuxing=1&Token=f8d2fefcbe3127c6ad5b7714398f389c&AppTime=1523255004&AppId=iOS",
         # 35 确认投资-可用余额
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=mybalannumbendi&Token=22f6c196da8b58922c444ae76ad90db2&UserId=578&AppId=iOS&platformiOS=iOS&AppTime=1523257743&defidenshuxing=1",
         # 36 确认投资
@@ -342,10 +348,10 @@ def start_request_once():
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=UserInfoReviewStatus&UserId=14973&Token=dc455796e54a783a9e64ed9c363d51bd&defidenshuxing=1&platformiOS=iOS&CmdId=UserInfoReviewStatus&AppTime=1523255223&AppId=iOS",
         # 13 获取我的银行卡列表数据
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=LLQueryCard&UserId=10719&Token=4eac92a9b31420484683cca14fb9c5c8&defidenshuxing=1&platformiOS=iOS&AppTime=1523250517&FlagChnl=1&AppId=iOS",
-        # 14 获取用户信息
-        "https://www.rongtuojinrong.com/hsesb/esb?CmdId=BendiLLQueryEBankAcct&UserId=10719&Token=54a1f22a5800ba323bac7905bf307c6a&defidenshuxing=1&platformiOS=iOS&AppTime=1523250558&FlagChnl=1&AppId=iOS",
+        # # 14 获取用户信息
+        # "https://www.rongtuojinrong.com/hsesb/esb?CmdId=BendiLLQueryEBankAcct&UserId=10719&Token=54a1f22a5800ba323bac7905bf307c6a&defidenshuxing=1&platformiOS=iOS&AppTime=1523250558&FlagChnl=1&AppId=iOS",
         # 15 充值页面 获取充值数据
-        "https://www.rongtuojinrong.com/hsesb/esb?CmdId=BendiLLQueryEBankAcct&UserId=10719&Token=a8866e02cae1a696673a361adc746a6e&defidenshuxing=1&platformiOS=iOS&CmdId=BendiLLQueryEBankAcct&AppTime=1523251579&FlagChnl=1&AppId=iOS",
+        "https://www.rongtuojinrong.com/hsesb/esb?CmdId=BendiLLQueryEBankAcct&UserId=10719&Token=a8866e02cae1a696673a361adc746a6e&defidenshuxing=1&platformiOS=iOS&AppTime=1523251579&FlagChnl=1&AppId=iOS",
         # 16 充值 -- 支付创单
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=LLNetSave&UserId=10719&Token=4aed492d25da2ad64510d9c85d33d822&defidenshuxing=1&TransAmt=1000.00&platformiOS=iOS&CmdId=LLNetSave&AppTime=1523251666&FlagChnl=1&AppId=iOS",
         # 17 我的首页—融托投资账户金额数据请求
@@ -374,8 +380,8 @@ def start_request_once():
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=BendiGetMonthDealStats&Token=fad38dfd71ef1eca604fd63563dd48e1&UserId=12154&defidenshuxing=1&platformiOS=iOS&AppTime=1523254748&SearchMonth=2017-12&AppId=iOS",
         # 29 交易密码设置-获取验证码
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=IdentifyCodeSend&AppId=iOS&UserId=11115&AppTime=1523255225&Token=e8f91db4be666e8d2d4a8458facc143b&FlagChnl=1&TransType=2&PhoneNum=13520227421&platformiOS=iOS&defidenshuxing=1",
-        # 30 交易密码设置-验证验证码
-        "https://www.rongtuojinrong.com/hsesb/esb?CmdId=IdentifyCodeCheck&AppId=iOS&UserId=11115&AppTime=1523255371&Token=715b83536a71aa461ac9050306318943&FlagChnl=1&TransType=2&PhoneNum=13520227421&Code=973816&platformiOS=iOS&defidenshuxing=1",
+        # # 30 交易密码设置-验证验证码
+        # "https://www.rongtuojinrong.com/hsesb/esb?CmdId=IdentifyCodeCheck&AppId=iOS&UserId=11115&AppTime=1523255371&Token=715b83536a71aa461ac9050306318943&FlagChnl=1&TransType=2&PhoneNum=13520227421&Code=973816&platformiOS=iOS&defidenshuxing=1",
         # 31 项目信息页 数据
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=GetProjectInfo&Token=1c4aff423a149fb42c54d5cf22b070a0&UserId=9166&jie_id=3116&defidenshuxing=1&platformiOS=iOS&AppTime=1523254471&AppId=iOS",
         # 32 项目列表
@@ -438,14 +444,6 @@ def start_request_once():
     print("出现错误的接口%d个：\n" % len(url_error_arr), url_error_arr)
 
 if __name__ == '__main__':
-    # create_Excel()
 
     start_request_ten() # 每个请求 10 次
-                    # 每个请求一次
-
-    # php_average_time_arr = [0.2089694023132324, 0.1844646692276001]
-    # www_average_time_arr = [0.5385219812393188, 0.5044508695602417]
-    # url_array = ["http://www.baidu.com","http://www.jd.com"]
-    #
-    # # 创建列表
-    # create_Excel(php_average_time_arr, www_average_time_arr, url_array)
+    # start_request_once() # 每个请求一次
