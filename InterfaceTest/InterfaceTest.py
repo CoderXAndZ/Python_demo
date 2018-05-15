@@ -73,8 +73,8 @@ def time_judge(time_bid):
             print("今天执行")
             while datetime.now().strftime('%H:%M:%S') < time_bid:
                 pass
-            # 获取首页数据
-            # stasus = get_bid_data(user_id,money,pwd_str,bid_lilv)
+            # 每个请求 10 次
+            start_request_ten()
             break
 
 # 设置单元格样式
@@ -188,8 +188,8 @@ def start_request_ten():
         # "https://www.rongtuojinrong.com/hsesb/esb?CmdId=LLCash&AppId=iOS&UserId=10877&AppTime=1523252546&Token=ada8e3adceb662553f48534ad74f2642&FlagChnl=1&TransAmt=123.00&TransType=1&BankCnaps=105471000030&BrabankName=中国建设银行股份有限公司聊城振兴路支行&defidenshuxing=2",
         # 22 提现开户行省份
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=LLGetProvince&UserId=194&Token=1d92f641df807f05af10a2cf809d9343&defidenshuxing=1&platformiOS=iOS&AppTime=1523252887&FlagChnl=1&AppId=iOS",
-        # # 23 提现开户行所在市
-        # "https://www.rongtuojinrong.com/hsesb/esb?CmdId=LLGetCity&UserId=194&defidenshuxing=1&Token=03f08ed2c11467e3f8f35f2b6596cd2e&Code=34&platformiOS=iOS&AppTime=1523252936&FlagChnl=1&AppId=iOS",
+        # 23 提现开户行所在市
+        "https://www.rongtuojinrong.com/hsesb/esb?CmdId=LLGetCity&UserId=194&defidenshuxing=1&Token=03f08ed2c11467e3f8f35f2b6596cd2e&Code=34&platformiOS=iOS&AppTime=1523252936&FlagChnl=1&AppId=iOS",
         # 24 提现开户行列表
         "https://www.rongtuojinrong.com/hsesb/esb?CmdId=Prcptcdquery&CardNo=6222081602005990337&UserId=194&defidenshuxing=1&Token=e3b2e9d092aaa115e1c1d08564202a43&platformiOS=iOS&CityCode=150500&AppTime=1523253017&FlagChnl=1&AppId=iOS",
         # 25 融托账户—我的债权（//项目状态jkzhuangtai（0：全部，6：未到期，8：已到期，10：冻结中））
@@ -445,5 +445,7 @@ def start_request_once():
 
 if __name__ == '__main__':
 
-    start_request_ten() # 每个请求 10 次
+    time_bid = input("请输入测试时间，格式（14:00:00），点击enter：")
+    time_judge(time_bid)
+    # start_request_ten() # 每个请求 10 次
     # start_request_once() # 每个请求一次
